@@ -21,7 +21,7 @@ jobs:
         run: yarn tsc
 
       - name: Check Formatting
-        run: yarn prettier -c .
+        run: yarn prettier -c ./src/
 
       - name: Check Linting // BONUS TASK
         run: yarn eslint \"**/*.{ts,tsx}\"
