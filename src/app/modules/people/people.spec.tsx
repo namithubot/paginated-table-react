@@ -1,4 +1,4 @@
-import { screen, within } from "@testing-library/react";
+import { fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, test } from "vitest";
 import { rest } from "msw";
@@ -117,9 +117,6 @@ describe("People", () => {
 
       expect(screen.getByRole("table")).toBeInTheDocument();
 
-      // TODO: Fails here. Passes if you comment this line.
-      // To check: If it runs in fresh instance.
-      // As it works on the previous test with exact same statment.
       expect(screen.getAllByRole("row").slice(1)).toHaveLength(10);
 
       expect(screen.getByText("Showing 1-10 of 100")).toBeInTheDocument();
@@ -203,6 +200,86 @@ describe("People", () => {
 
       expect(screen.getByRole("button", { name: "Previous" })).toBeDisabled();
       expect(screen.getByRole("button", { name: "First" })).toBeDisabled();
+    });
+  });
+
+  describe("Add Person", async () => {
+    beforeEach(() => {
+      window.crypto.randomUUID = () => {
+        return `3-9-9-9-9`;
+      };
+    });
+
+    test("should add person", async () => {
+      const user = userEvent.setup();
+
+      await renderPeople();
+
+      expect(screen.getByRole("table")).toBeInTheDocument();
+
+      await user.click(screen.getByRole("button", { name: "Add Person" }));
+      await user.type(screen.getByRole("textbox", { name: "name" }), "Shiva");
+      await user.type(screen.getByRole("textbox", { name: "show" }), "PVR");
+      await user.type(
+        screen.getByRole("textbox", { name: "actor" }),
+        "Ranbir Kapoor",
+      );
+
+      await user.click(screen.getByRole("button", { name: "Add Movie" }));
+      await user.type(
+        screen.getByRole("textbox", { name: "movie-title" }),
+        "Brahmastra 2",
+      );
+      await fireEvent.change(screen.getByLabelText("release date"), {
+        target: { value: "2024-05-24" },
+      });
+      await fireEvent.change(screen.getByLabelText("date of birth"), {
+        target: { value: "2020-05-24" },
+      });
+
+      await user.click(
+        screen.getByRole("button", { name: "Add Person To Table" }),
+      );
+
+      await user.type(screen.getByRole("textbox", { name: "Search" }), "Shiva");
+
+      expect(screen.getAllByRole("row").slice(1)).toHaveLength(1);
+    });
+
+    test("should not save person if all the fields are not provided", async () => {
+      const user = userEvent.setup();
+
+      await renderPeople();
+
+      expect(screen.getByRole("table")).toBeInTheDocument();
+
+      await user.click(screen.getByRole("button", { name: "Add Person" }));
+      await user.type(screen.getByRole("textbox", { name: "name" }), "Shiva");
+      await user.type(
+        screen.getByRole("textbox", { name: "actor" }),
+        "Ranbir Kapoor",
+      );
+
+      await user.click(screen.getByRole("button", { name: "Add Movie" }));
+      await user.type(
+        screen.getByRole("textbox", { name: "movie-title" }),
+        "Brahmastra",
+      );
+      await user.click(screen.getByRole("button", { name: "x" }));
+
+      await user.click(screen.getByRole("button", { name: "Add Movie" }));
+      await user.type(
+        screen.getByRole("textbox", { name: "movie-title" }),
+        "Brahmastra 2",
+      );
+
+      await user.click(
+        screen.getByRole("button", { name: "Add Person To Table" }),
+      );
+
+      await user.type(screen.getByRole("textbox", { name: "Search" }), "Shiva");
+
+      expect(screen.getAllByRole("row").slice(1)).toHaveLength(0);
     });
   });
 });

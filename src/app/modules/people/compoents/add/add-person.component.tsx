@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Person } from "../../model";
+
 import "./add-person.css";
 
 export const AddPerson = ({ onAdd }: { onAdd: (person: Person) => void }) => {
@@ -95,6 +96,7 @@ export const AddPerson = ({ onAdd }: { onAdd: (person: Person) => void }) => {
 
             <input
               type="date"
+              pattern="\d{4}-\d{2}-\d{2}"
               value={new Date(movie.released).toLocaleDateString("sv-SE")}
               onChange={(e) =>
                 setPerson({
@@ -113,6 +115,7 @@ export const AddPerson = ({ onAdd }: { onAdd: (person: Person) => void }) => {
               }
               aria-label="release date"
               placeholder="Release Date"
+              data-tesid="release-date"
               required
             />
             <button
@@ -135,7 +138,7 @@ export const AddPerson = ({ onAdd }: { onAdd: (person: Person) => void }) => {
           style={{ width: "50%", display: "block", float: "right" }}
           type="submit"
         >
-          Add Person
+          Add Person To Table
         </button>
       </form>
     </>
