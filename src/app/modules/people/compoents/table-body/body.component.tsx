@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import { Column, Person } from "../../model";
 
-export const TableBody = ({
-  data,
-}: {
-  data: Person[];
-}) => {
+export const TableBody = ({ data }: { data: Person[] }) => {
   return (
     <tbody>
       {/* {

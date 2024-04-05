@@ -2,7 +2,13 @@ import { Column, Person } from "./model";
 import { usePeopleQuery } from "./query";
 
 import "./people.css";
-import { AddPerson, Paginator, PeopleError, TableBody, TableHead } from "./compoents";
+import {
+  AddPerson,
+  Paginator,
+  PeopleError,
+  TableBody,
+  TableHead,
+} from "./compoents";
 import { useEffect, useState } from "react";
 import { addPerson } from "./services";
 
@@ -60,11 +66,10 @@ export function People() {
   function tryAddPerson(person: Person) {
     try {
       addPerson(person);
-      setPersons([...persons, ...[person]])
-    } catch(err) {
-      alert('Failed to add');
+      setPersons([...persons, ...[person]]);
+    } catch (err) {
+      alert("Failed to add");
     }
-
   }
 
   if (loading) {
@@ -77,9 +82,7 @@ export function People() {
 
   return (
     <>
-      <div>
-        {/* <AddPerson onAdd={tryAddPerson} /> */}
-      </div>
+      <div>{/* <AddPerson onAdd={tryAddPerson} /> */}</div>
       <input
         style={{ width: "100%", marginBottom: "1rem" }}
         type="text"

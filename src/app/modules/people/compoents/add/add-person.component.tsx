@@ -1,13 +1,7 @@
 import React, { useState } from "react";
 import { Person } from "../../model";
 
-export const AddPerson = (
-  {
-    onAdd
-  } : {
-    onAdd: (person: Person) => void
-  }
-) => {
+export const AddPerson = ({ onAdd }: { onAdd: (person: Person) => void }) => {
   const [person, setPerson] = useState<Person>({
     name: "",
     actor: "",
@@ -19,9 +13,10 @@ export const AddPerson = (
   });
 
   function addMovie() {
-    setPerson({...person,
-      movies: [...person.movies, ...[{title: '', released: ''}
-    ]]});
+    setPerson({
+      ...person,
+      movies: [...person.movies, ...[{ title: "", released: "" }]],
+    });
   }
 
   return (
@@ -53,8 +48,13 @@ export const AddPerson = (
         />
         <input
           type="date"
-          value={new Date(person.dob).toLocaleDateString('sv-SE')}
-          onChange={(e) => setPerson({ ...person, dob: new Date(e.target.value).toISOString() })}
+          value={new Date(person.dob).toLocaleDateString("sv-SE")}
+          onChange={(e) =>
+            setPerson({
+              ...person,
+              dob: new Date(e.target.value).toISOString(),
+            })
+          }
           aria-label="date of birth"
           placeholder="Date of Birth"
           required
@@ -64,15 +64,21 @@ export const AddPerson = (
             <input
               type="text"
               value={movie.title}
-              onChange={(e) => setPerson({ ...person, 
-                movies: [
-                  ...person.movies.slice(0, i),
-                  ...[{
-                    title: e.target.value,
-                    released: person.movies[i].released
-                  }],
-                  ...person.movies.slice(i + 1)
-                ] })}
+              onChange={(e) =>
+                setPerson({
+                  ...person,
+                  movies: [
+                    ...person.movies.slice(0, i),
+                    ...[
+                      {
+                        title: e.target.value,
+                        released: person.movies[i].released,
+                      },
+                    ],
+                    ...person.movies.slice(i + 1),
+                  ],
+                })
+              }
               aria-label="movie-title"
               placeholder="Movie Title"
               required
@@ -80,34 +86,54 @@ export const AddPerson = (
 
             <input
               type="date"
-              value={new Date(movie.released).toLocaleDateString('sv-SE')}
-              onChange={(e) => setPerson({ ...person, 
-                movies: [
-                  ...person.movies.slice(0, i),
-                  ...[{
-                    title: e.target.value,
-                    released: new Date(person.movies[i].released).toISOString()
-                  }],
-                  ...person.movies.slice(i + 1)
-                ] })}aria-label="release date"
+              value={new Date(movie.released).toLocaleDateString("sv-SE")}
+              onChange={(e) =>
+                setPerson({
+                  ...person,
+                  movies: [
+                    ...person.movies.slice(0, i),
+                    ...[
+                      {
+                        title: e.target.value,
+                        released: new Date(
+                          person.movies[i].released,
+                        ).toISOString(),
+                      },
+                    ],
+                    ...person.movies.slice(i + 1),
+                  ],
+                })
+              }
+              aria-label="release date"
               placeholder="Release Date"
               required
             />
-            <button onClick={() => {
-              setPerson({...person,
-              movies: [...person.movies.slice(0, i), ...person.movies.slice(i + 1)]})
-            }}>x</button>
+            <button
+              onClick={() => {
+                setPerson({
+                  ...person,
+                  movies: [
+                    ...person.movies.slice(0, i),
+                    ...person.movies.slice(i + 1),
+                  ],
+                });
+              }}
+            >
+              x
+            </button>
           </div>
         ))}
         <button onClick={() => addMovie()}>Add Movie</button>
         <button
           style={{ width: "100%" }}
           type="submit"
-          onClick={e => {
+          onClick={(e) => {
             e.preventDefault();
-            onAdd({...person, updatedAt: new Date().toISOString()});
+            onAdd({ ...person, updatedAt: new Date().toISOString() });
           }}
-          >Add Person</button>
+        >
+          Add Person
+        </button>
       </form>
     </>
   );
