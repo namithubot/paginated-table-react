@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Person } from "../../model";
+import "./add-person.css";
 
 export const AddPerson = ({ onAdd }: { onAdd: (person: Person) => void }) => {
   const [person, setPerson] = useState<Person>({
@@ -19,11 +20,16 @@ export const AddPerson = ({ onAdd }: { onAdd: (person: Person) => void }) => {
     });
   }
 
+  function performAdd() {
+    onAdd({ ...person, updatedAt: new Date().toISOString() });
+  }
+
   return (
     <>
-      <form>
+      <form onSubmit={performAdd} className="add-person">
         <input
           type="text"
+          className="person-detail"
           onChange={(e) => setPerson({ ...person, name: e.target.value })}
           value={person.name}
           aria-label="name"
@@ -32,6 +38,7 @@ export const AddPerson = ({ onAdd }: { onAdd: (person: Person) => void }) => {
         />
         <input
           type="text"
+          className="person-detail"
           onChange={(e) => setPerson({ ...person, show: e.target.value })}
           value={person.show}
           aria-label="show"
@@ -40,6 +47,7 @@ export const AddPerson = ({ onAdd }: { onAdd: (person: Person) => void }) => {
         />
         <input
           type="text"
+          className="person-detail"
           onChange={(e) => setPerson({ ...person, actor: e.target.value })}
           value={person.actor}
           aria-label="actor"
@@ -48,6 +56,7 @@ export const AddPerson = ({ onAdd }: { onAdd: (person: Person) => void }) => {
         />
         <input
           type="date"
+          className="person-detail"
           value={new Date(person.dob).toLocaleDateString("sv-SE")}
           onChange={(e) =>
             setPerson({
@@ -60,7 +69,7 @@ export const AddPerson = ({ onAdd }: { onAdd: (person: Person) => void }) => {
           required
         />
         {person.movies.map((movie, i) => (
-          <div key={`add-movie-${i}`}>
+          <div key={`add-movie-${i}`} className="movie-detail">
             <input
               type="text"
               value={movie.title}
@@ -94,10 +103,8 @@ export const AddPerson = ({ onAdd }: { onAdd: (person: Person) => void }) => {
                     ...person.movies.slice(0, i),
                     ...[
                       {
-                        title: e.target.value,
-                        released: new Date(
-                          person.movies[i].released,
-                        ).toISOString(),
+                        title: movie.title,
+                        released: new Date(e.target.value).toISOString(),
                       },
                     ],
                     ...person.movies.slice(i + 1),
@@ -125,12 +132,8 @@ export const AddPerson = ({ onAdd }: { onAdd: (person: Person) => void }) => {
         ))}
         <button onClick={() => addMovie()}>Add Movie</button>
         <button
-          style={{ width: "100%" }}
+          style={{ width: "50%", display: "block", float: "right" }}
           type="submit"
-          onClick={(e) => {
-            e.preventDefault();
-            onAdd({ ...person, updatedAt: new Date().toISOString() });
-          }}
         >
           Add Person
         </button>

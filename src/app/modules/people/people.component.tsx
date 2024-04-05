@@ -19,6 +19,9 @@ export function People() {
   const [searchString, setSearchString] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
   const [pageSize, setPagesize] = useState(10);
+  // This contains the locally created objects
+  const [persons, setPersons] = useState<Person[]>([]);
+  const [showAddButton, setShowAddButton] = useState(true);
   const columns: Column[] = [
     {
       name: "Name",
@@ -46,14 +49,15 @@ export function People() {
     setPagesize(size);
   }
 
-  // function tryAddPerson(person: Person) {
-  //   try {
-  //     addPerson(person);
-  //     setPersons([...persons, ...[person]]);
-  //   } catch (err) {
-  //     alert("Failed to add");
-  //   }
-  // }
+  function tryAddPerson(person: Person) {
+    try {
+      addPerson(person);
+      setPersons([...persons, ...[person]]);
+      setShowAddButton(true);
+    } catch (err) {
+      alert("Failed to add");
+    }
+  }
 
   if (loading) {
     return <p>Fetching People...</p>;
@@ -65,7 +69,11 @@ export function People() {
 
   return (
     <>
-      <div>{/* <AddPerson onAdd={tryAddPerson} /> */}</div>
+      {showAddButton ? (
+        <button onClick={() => setShowAddButton(false)}>Add Person</button>
+      ) : (
+        <AddPerson onAdd={tryAddPerson} />
+      )}
       <input
         style={{ width: "100%", marginBottom: "1rem" }}
         type="text"
@@ -79,7 +87,8 @@ export function People() {
       <table>
         <TableHead onSort={sort} columns={columns} />
         <TableBody
-          data={(people || [])
+          data={persons
+            .concat(people)
             .filter((p) =>
               p.name
                 .toLocaleLowerCase()
