@@ -14,7 +14,6 @@ import { addPerson } from "./services";
 
 export function People() {
   const { data: people, loading, error } = usePeopleQuery();
-  const [persons, setPersons] = useState(people || []);
   const [sortBy, setSortBy] = useState("name");
   const [asscending, setAscending] = useState(true);
   const [searchString, setSearchString] = useState("");
@@ -37,22 +36,6 @@ export function People() {
     { name: "Movies", id: "movies" },
   ];
 
-  useEffect(() => {
-    const sortReturn = asscending ? 1 : -1;
-    setPersons(
-      (people || [])
-        .filter((p) =>
-          p.name.toLocaleLowerCase().includes(searchString.toLocaleLowerCase()),
-        )
-        .sort((p1, p2) =>
-          (p1 as any)[sortBy] < (p2 as any)[sortBy]
-            ? -1 * sortReturn
-            : sortReturn,
-        )
-        .slice(pageNumber * pageSize, (pageNumber + 1) * pageSize),
-    );
-  }, [sortBy, people, asscending, searchString, pageNumber, pageSize]);
-
   function sort(col: string, isAsc: boolean) {
     setSortBy(col);
     setAscending(isAsc);
@@ -63,14 +46,14 @@ export function People() {
     setPagesize(size);
   }
 
-  function tryAddPerson(person: Person) {
-    try {
-      addPerson(person);
-      setPersons([...persons, ...[person]]);
-    } catch (err) {
-      alert("Failed to add");
-    }
-  }
+  // function tryAddPerson(person: Person) {
+  //   try {
+  //     addPerson(person);
+  //     setPersons([...persons, ...[person]]);
+  //   } catch (err) {
+  //     alert("Failed to add");
+  //   }
+  // }
 
   if (loading) {
     return <p>Fetching People...</p>;
@@ -95,7 +78,17 @@ export function People() {
 
       <table>
         <TableHead onSort={sort} columns={columns} />
-        <TableBody data={persons} />
+        <TableBody
+          data={(people || [])
+            .filter((p) =>
+              p.name.toLocaleLowerCase().includes(searchString.toLocaleLowerCase()),
+            )
+            .sort((p1, p2) =>
+              ((p1 as any)[sortBy] < (p2 as any)[sortBy]
+                ? -1
+                : 1) * (asscending ? 1 : -1)
+            )
+            .slice(pageNumber * pageSize, (pageNumber + 1) * pageSize)} />
       </table>
       <Paginator
         page={pageNumber}
