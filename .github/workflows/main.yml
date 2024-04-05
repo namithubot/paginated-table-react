@@ -21,10 +21,10 @@ jobs:
         run: yarn tsc
 
       - name: Check Formatting
-        run: yarn prettier -c ./src/
+        run: yarn prettier -c src
 
       - name: Check Linting // BONUS TASK
-        run: yarn eslint \"**/*.{ts,tsx}\"
+        run: yarn eslint
 
       - name: Run Unit and Integration Tests
         run: yarn test run
