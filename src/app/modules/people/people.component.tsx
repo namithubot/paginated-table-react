@@ -81,14 +81,17 @@ export function People() {
         <TableBody
           data={(people || [])
             .filter((p) =>
-              p.name.toLocaleLowerCase().includes(searchString.toLocaleLowerCase()),
+              p.name
+                .toLocaleLowerCase()
+                .includes(searchString.toLocaleLowerCase()),
             )
-            .sort((p1, p2) =>
-              ((p1 as any)[sortBy] < (p2 as any)[sortBy]
-                ? -1
-                : 1) * (asscending ? 1 : -1)
+            .sort(
+              (p1, p2) =>
+                ((p1 as any)[sortBy] < (p2 as any)[sortBy] ? -1 : 1) *
+                (asscending ? 1 : -1),
             )
-            .slice(pageNumber * pageSize, (pageNumber + 1) * pageSize)} />
+            .slice(pageNumber * pageSize, (pageNumber + 1) * pageSize)}
+        />
       </table>
       <Paginator
         page={pageNumber}
